@@ -1,20 +1,40 @@
 import React, { useState } from 'react';
 import VideoModal from '../components/VideoModal';
+import { createClient } from 'contentful';
+import { useEffect } from 'react';
 
 function Home() {
-  const videos = [
-    { id: 1, title: 'Video 1', url: '../../public/video demo1.mp4' },
-    { id: 2, title: 'Video 2', url: '../../public/video demo2.mp4' },
-    { id: 3, title: 'Video 3', url: '../../public/video demo3.mp4' },
-    { id: 4, title: 'Video 4', url: '../../public/video demo4.mp4' },
-    { id: 5, title: 'Video 5', url: '../../public/video demo5.mp4' },
-  ];
-
-  const [currentVideo, setCurrentVideo] = useState(videos[0].url);
-  const [currentTitle, setCurrentTitle] = useState(videos[0].title);
+  const [videos, setVideos] = useState([]);
+  const [currentVideo, setCurrentVideo] = useState('');
+  const [currentTitle, setCurrentTitle] = useState('');
 
   const [showModal, setShowModal] = useState(false);
   const [modalVideo, setModalVideo] = useState('');
+
+  const fetchVideos = async () => {
+    const client = createClient({
+      space: import.meta.env.VITE_CONTENTFUL_SPACE_ID,
+      accessToken: import.meta.env.VITE_CONTENTFUL_ACCESS_TOKEN,
+    });
+
+    const response = await client.getEntries({ content_type: 'masterpiece' });
+    console.log(response.items);
+    const videos = response.items.map((item) => {
+      return {
+        id: item.sys.id,
+        title: item.fields.musicName,
+        url: `https:${item.fields.video[0].fields.file.url}`,
+      };
+    });
+    console.log(videos);
+    setVideos(videos);
+    setCurrentVideo(videos[0].url);
+    setCurrentTitle(videos[0].title);
+  };
+
+  useEffect(() => {
+    fetchVideos();
+  }, []);
 
   const handleVideoClick = (url) => {
     setCurrentVideo(url);
