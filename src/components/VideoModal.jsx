@@ -10,6 +10,7 @@ function formatTime(seconds) {
 function VideoModal({ title, url, onClose }) {
   const navigate = useNavigate();
   const videoRef = useRef(null);
+  //not working good now
   const [isMuted, setIsMuted] = useState(false); // Initially, sound is on
   const [progress, setProgress] = useState(0); // New state for tracking progress
   const [isDragging, setIsDragging] = useState(false);
