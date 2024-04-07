@@ -50,20 +50,25 @@ function Home() {
   };
   return (
     <div className='relative w-full h-screen overflow-hidden'>
-      <video
-        key={currentVideo}
-        autoPlay
-        muted
-        loop
-        playsInline
-        className='absolute w-full h-full object-cover z-[1] cursor-pointer'
-        onClick={() => {
-          setShowModal(true);
-          setModalVideo(currentVideo);
-        }}
-      >
-        <source src={currentVideo} type='video/mp4' />
-      </video>
+      {videos.map((video) => (
+        <video
+          key={video.id}
+          autoPlay
+          muted
+          loop
+          preload='auto'
+          playsInline
+          className='absolute w-full h-full object-cover z-[1]'
+          src={video.url}
+          hidden={currentVideo !== video.url}
+          onClick={() => {
+            setShowModal(true);
+            setModalVideo(currentVideo);
+          }}
+        >
+          <source src={video} type='video/mp4' />
+        </video>
+      ))}
       <div className='absolute top-0 left-0 w-full h-full flex flex-col justify-between'>
         <header className='text-end z-10 text-6xl'>Rebel-Rebel</header>
         {showModal && (
