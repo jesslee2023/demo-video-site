@@ -7,6 +7,8 @@ function Home() {
   const [videos, setVideos] = useState([]);
   const [currentVideo, setCurrentVideo] = useState('');
   const [currentTitle, setCurrentTitle] = useState('');
+  const [currentMusician, setCurrentMusician] = useState('');
+  const [currentCompany, setCurrentCompany] = useState('');
 
   const [showModal, setShowModal] = useState(false);
   const [modalVideo, setModalVideo] = useState('');
@@ -24,12 +26,16 @@ function Home() {
         id: item.sys.id,
         title: item.fields.musicName,
         url: `https:${item.fields.video[0].fields.file.url}`,
+        musician: item.fields.musicianName,
+        company: item.fields.company,
       };
     });
     console.log(videos);
     setVideos(videos);
     setCurrentVideo(videos[0].url);
     setCurrentTitle(videos[0].title);
+    setCurrentMusician(videos[0].musician);
+    setCurrentCompany(videos[0].company);
   };
 
   useEffect(() => {
@@ -70,7 +76,7 @@ function Home() {
         </video>
       ))}
       <div className='absolute top-0 left-0 w-full h-full flex flex-col justify-between'>
-        <header className='text-end z-10 text-6xl'>Rebel-Rebel</header>
+        <header className='text-end z-10 text-6xl'>{currentCompany}</header>
         {showModal && (
           <VideoModal
             title={currentTitle}
@@ -82,8 +88,8 @@ function Home() {
           className='absolute z-20 top-[50%] left-[10%] text-center'
           style={fadeInStyle}
         >
-          <p className='music-name text-5xl font-bold'>Music Name</p>
-          <p className='composer-name text-5xl font-bold'>Composer Name</p>
+          <p className='music-name text-5xl font-bold'>{currentTitle}</p>
+          <p className='composer-name text-5xl font-bold'>{currentMusician}</p>
         </div>
         <footer className='text-center text-white z-10'>
           <div className='z-10 text-center'>
