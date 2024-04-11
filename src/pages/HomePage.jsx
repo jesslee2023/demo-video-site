@@ -1,50 +1,34 @@
 import React, { useState } from 'react';
 import VideoModal from '../components/VideoModal';
-import { createClient } from 'contentful';
 import { useEffect } from 'react';
+import useFetchMusic from '../hooks/useFetchMusic';
 
 function Home() {
+  const { fetchMusic } = useFetchMusic();
   const [videos, setVideos] = useState([]);
   const [currentVideo, setCurrentVideo] = useState('');
   const [currentTitle, setCurrentTitle] = useState('');
   const [currentMusician, setCurrentMusician] = useState('');
   const [currentCompany, setCurrentCompany] = useState('');
-
   const [showModal, setShowModal] = useState(false);
   const [modalVideo, setModalVideo] = useState('');
 
-  const fetchVideos = async () => {
-    const client = createClient({
-      space: import.meta.env.VITE_CONTENTFUL_SPACE_ID,
-      accessToken: import.meta.env.VITE_CONTENTFUL_ACCESS_TOKEN,
-    });
-
-    const response = await client.getEntries({ content_type: 'masterpiece' });
-    console.log(response.items);
-    const videos = response.items.map((item) => {
-      return {
-        id: item.sys.id,
-        title: item.fields.musicName,
-        url: `https:${item.fields.video[0].fields.file.url}`,
-        musician: item.fields.musicianName,
-        company: item.fields.company,
-      };
-    });
-    console.log(videos);
-    setVideos(videos);
-    setCurrentVideo(videos[0].url);
-    setCurrentTitle(videos[0].title);
-    setCurrentMusician(videos[0].musician);
-    setCurrentCompany(videos[0].company);
-  };
-
   useEffect(() => {
-    fetchVideos();
+    async function fetchDataFromContentful() {
+      const videos = await fetchMusic();
+      setVideos(videos);
+      setCurrentVideo(videos[0].url);
+      setCurrentTitle(videos[0].title);
+      setCurrentMusician(videos[0].musician);
+      setCurrentCompany(videos[0].company);
+    }
+    fetchDataFromContentful();
   }, []);
 
   const handleVideoClick = (url) => {
     setCurrentVideo(url);
     setCurrentTitle(videos.find((video) => video.url === url).title);
+    setCurrentMusician(videos.find((video) => video.url === url).musician);
   };
 
   const fadeInStyle = {
@@ -81,6 +65,7 @@ function Home() {
           <VideoModal
             title={currentTitle}
             url={modalVideo}
+            composer={currentMusician}
             onClose={() => setShowModal(false)}
           />
         )}

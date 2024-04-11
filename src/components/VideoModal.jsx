@@ -7,7 +7,7 @@ function formatTime(seconds) {
   return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
 }
 
-function VideoModal({ title, url, onClose }) {
+function VideoModal({ title, url, composer, onClose }) {
   const navigate = useNavigate();
   const videoRef = useRef(null);
 
@@ -94,9 +94,9 @@ function VideoModal({ title, url, onClose }) {
         <div className='flex items-center'>
           <button
             className='text-white mr-4'
-            onClick={() => navigate('/musician')}
+            onClick={() => navigate(`/musician/${composer}`)}
           >
-            Go to the Artist Page
+            {composer}
           </button>
           <span className='text-white'>
             {formatTime(currentTime)} / {formatTime(duration)}
